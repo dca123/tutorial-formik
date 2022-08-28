@@ -1,40 +1,67 @@
+import {
+  Formik,
+  Form as FormikForm,
+  Field,
+  useField,
+  FieldHookConfig,
+} from "formik";
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 
-export const Form = () => {
+const initialValues = {
+  name: "",
+  cardNumber: "",
+  expiryDate: "",
+  cvv: "",
+};
+
+const onSubmit = (values: typeof initialValues) => {
+  console.log(values);
+};
+
+export const Form = ({
+  handleSubmit,
+}: {
+  handleSubmit: (values: typeof initialValues) => void;
+}) => {
   return (
-    <div className="flex-row">
-      <div>
-        <Label text="Cardholder Name" />
-        <Input type="text" />
-      </div>
-
-      <div className="mt-4">
-        <Label text="Card Number" />
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <CardIcon />
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <FormikForm>
+        <div className="flex-row">
+          <div>
+            <Label text="Cardholder Name" />
+            <Input type="text" name="name" />
           </div>
-          <Input type="text" />
-        </div>
-      </div>
 
-      <div className="mt-4 flex w-full">
-        <div className="w-full">
-          <Label text="Expiry Date" />
-          <Input type="text" />
+          <div className="mt-4">
+            <Label text="Card Number" />
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <CardIcon />
+              </div>
+              <Input type="text" name="cardNumber" />
+            </div>
+          </div>
+
+          <div className="mt-4 flex w-full">
+            <div className="w-full">
+              <Label text="Expiry Date" />
+              <Input type="text" name="expiryDate" />
+            </div>
+            <div className="ml-4 w-full">
+              <Label text="CVV" />
+              <Input type="text" name="cvv" />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-lg bg-green-500 py-4 text-xl font-normal text-green-50 shadow-sm hover:shadow-lg hover:shadow-green-500/30"
+          >
+            Checkout Now
+          </button>
         </div>
-        <div className="ml-4 w-full">
-          <Label text="CVV" />
-          <Input type="text" />
-        </div>
-      </div>
-      <button
-        type="submit"
-        className="mt-6 w-full rounded-lg bg-green-500 py-4 text-xl font-normal text-green-50 shadow-sm hover:shadow-lg hover:shadow-green-500/30"
-      >
-        Checkout Now
-      </button>
-    </div>
+      </FormikForm>
+    </Formik>
   );
 };
 
@@ -46,9 +73,17 @@ const Label = ({ text }: { text: string }) => {
   );
 };
 
-const Input = ({ type }: { type: HTMLInputTypeAttribute }) => {
+const Input = ({
+  type,
+  name,
+}: {
+  type: HTMLInputTypeAttribute;
+  name: string;
+}) => {
+  const [field] = useField(name);
   return (
     <input
+      {...field}
       type={type}
       className="mt-1 w-full rounded border border-slate-400 py-2 pl-3 text-slate-600 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
     />
