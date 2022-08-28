@@ -1,40 +1,59 @@
 import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
+import {
+  useForm,
+  UseFormRegister,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 
-export const Form = () => {
+export const Form = ({
+  handleSubmit: onSubmit,
+}: {
+  handleSubmit: () => void;
+}) => {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      cardholderName: "",
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+    },
+  });
   return (
-    <div className="flex-row">
-      <div>
-        <Label text="Cardholder Name" />
-        <Input type="text" />
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex-row">
+        <div>
+          <Label text="Cardholder Name" />
+          <Input type="text" control={register("cardholderName")} />
+        </div>
 
-      <div className="mt-4">
-        <Label text="Card Number" />
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <CardIcon />
+        <div className="mt-4">
+          <Label text="Card Number" />
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <CardIcon />
+            </div>
+            <Input type="text" control={register("cardNumber")} />
           </div>
-          <Input type="text" />
         </div>
-      </div>
 
-      <div className="mt-4 flex w-full">
-        <div className="w-full">
-          <Label text="Expiry Date" />
-          <Input type="text" />
+        <div className="mt-4 flex w-full">
+          <div className="w-full">
+            <Label text="Expiry Date" />
+            <Input type="text" control={register("expiryDate")} />
+          </div>
+          <div className="ml-4 w-full">
+            <Label text="CVV" />
+            <Input type="text" control={register("cvv")} />
+          </div>
         </div>
-        <div className="ml-4 w-full">
-          <Label text="CVV" />
-          <Input type="text" />
-        </div>
+        <button
+          type="submit"
+          className="mt-6 w-full rounded-lg bg-green-500 py-4 text-xl font-normal text-green-50 shadow-sm hover:shadow-lg hover:shadow-green-500/30"
+        >
+          Checkout Now
+        </button>
       </div>
-      <button
-        type="submit"
-        className="mt-6 w-full rounded-lg bg-green-500 py-4 text-xl font-normal text-green-50 shadow-sm hover:shadow-lg hover:shadow-green-500/30"
-      >
-        Checkout Now
-      </button>
-    </div>
+    </form>
   );
 };
 
@@ -46,11 +65,18 @@ const Label = ({ text }: { text: string }) => {
   );
 };
 
-const Input = ({ type }: { type: HTMLInputTypeAttribute }) => {
+const Input = ({
+  type,
+  control,
+}: {
+  type: HTMLInputTypeAttribute;
+  control: UseFormRegisterReturn;
+}) => {
   return (
     <input
       type={type}
       className="mt-1 w-full rounded border border-slate-400 py-2 pl-3 text-slate-600 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+      {...control}
     />
   );
 };
